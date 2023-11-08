@@ -1,34 +1,111 @@
-const url = `https://6549763ee182221f8d519550.mockapi.io/users`;
-let urlBuscar = `https://6549763ee182221f8d519550.mockapi.io/users/${inputBuscar.value}`
+const url = `https://6549763ee182221f8d519550.mockapi.io/users/`;
 const ul = document.getElementById("results");
 const btnBuscar = document.getElementById("btnGet1");
+const btnPost = document.getElementById("btnPost");
 const inputBuscar = document.getElementById("inputGet1Id");
 
-fetch(url, "GET")
-.then(response => response.json())
-.then(users => {
-    for (const i of users[i]) {
-        let name = users[i].name;
-        let lastName = users[i].lastname;
-        let id = users[i].id;
 
-        let li = document.createElement("li");
+document.addEventListener("DOMContentLoaded", ()=>{
 
-        li.innerHTML = 
-        `
-        <p> ID: ${id}</p>
-        <p> NAME: ${name} </p>
-        <p> LASTNAME: ${lastName} </p>
-        `
+    fetch(url, {
+        method: "GET",
+    })
+    .then(response => response.json())
+    .then(users => {
+        //console.log(users);
+        users.forEach(element => {
 
-        ul.appendChild = li;
+            let name = element.name;
+            let lastName = element.lastname;
+            let id = element.id;
+
+            ul.innerHTML += `
+            <p> ID: ${id}<br>
+            Nombre: ${name}<br>
+            Apellido: ${lastName}</p>`
+        })
+    })
+    .catch(error=> console.log(error))
+})
+
+
+btnBuscar.addEventListener("click", () => {
+
+    let id = inputBuscar.value;
+    if (id != 0){
+        fetch(url + id, {
+            method:"GET",
+        })
+        .then(response => response.json())
+        .then(user => {
+
+            let name = user.name;
+            let lastName = user.lastname;
+            let id = user.id;
+
+            ul.innerHTML = `
+            <p> ID: ${id}<br>
+            Nombre: ${name}<br>
+            Apellido: ${lastName}</p>`
+        })
     }
 })
 
-btnBuscar.addEventListener("click", () => {
-    fetch(url, "GET")
-    .then(response => response.json())
-    .then(users => {
+
+
+btnPost.addEventListener("click", () => {
+
+    let nombre = document.getElementById("inputPostNombre").value;
+    let apellido = document.getElementById("inputPostApellido").value;
+
+    if (nombre !='' && apellido !=''){
+
+        fetch(url, {
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            method:"POST",
+            body: JSON.stringify(
+            {
+                name: nombre,
+                lastname: apellido,
+            }
+        )})
+        .then(response => response.json())
+        .then(user => {
+
+            let name = user.name;
+            let lastName = user.lastname;
+            let id = user.id;
+
+            ul.innerHTML = `
+            <p> ID: ${id}<br>
+            Nombre: ${name}<br>
+            Apellido: ${lastName}</p>`
+        })
+    }
+})
+
+
+
+const btnPut = document.getElementById("btnSendChanges");
+btnPut.addEventListener("click", () => {
+
+    let id = document.getElementById("inputPutId").value;
+
+    if (id!=0){
         
-    })
+        fetch((url + id), {
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            method:"POST",
+            body: JSON.stringify(
+            {
+                name: nombre,
+                lastname: apellido,
+            })
+        })
+
+    }
 })
