@@ -87,25 +87,58 @@ btnPost.addEventListener("click", () => {
 })
 
 
-
-const btnPut = document.getElementById("btnSendChanges");
+const btnPut = document.getElementById("btnPut");
 btnPut.addEventListener("click", () => {
-
     let id = document.getElementById("inputPutId").value;
+    let nombre = document.getElementById("inputPutNombre").value;
+    let apellido = document.getElementById("inputPutApellido").value;
 
-    if (id!=0){
-        
-        fetch((url + id), {
+    if (id != 0 && nombre !== '' && apellido !== '') {
+        fetch(url + id, {
             headers: {
                 'Content-Type': 'application/json'
-              },
-            method:"POST",
-            body: JSON.stringify(
-            {
+            },
+            method: "PUT",
+            body: JSON.stringify({
                 name: nombre,
                 lastname: apellido,
             })
         })
+        .then(response => response.json())
+        .then(user => {
+            let name = user.name;
+            let lastName = user.lastname;
+            let id = user.id;
 
+            ul.innerHTML = `
+            <p> ID: ${id}<br>
+            Nombre: ${name}<br>
+            Apellido: ${lastName}</p>`
+        })
+        .catch(error => console.error('Error al actualizar el usuario:', error));
     }
-})
+});
+
+const btnDelete = document.getElementById("btnDelete");
+btnDelete.addEventListener("click", () => {
+    let id = document.getElementById("inputDelete").value;
+   
+
+    if (id != 0) {
+        fetch(url + id, {
+            method: "DELETE",
+        })
+        .then(response =>  response.json())
+        .then(user => {
+            let name = user.name;
+            let lastName = user.lastname;
+            let id = user.id;
+
+            ul.innerHTML = `
+            <p> ID: ${id}<br>
+            Nombre: ${name}<br>
+            Apellido: ${lastName}</p>`
+        })
+        .catch(error => console.error('Error al intentar eliminar el usuario:', error));
+    }
+});
